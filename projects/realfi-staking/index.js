@@ -20,7 +20,7 @@ module.exports = {
   timetravel: false,
   misrepresentedTokens: true,
   start: '2026-06-17',
-  methodology: 'TVL corresponds to USDrf locked in the RealFi staking vault. RealFi operates a two-token structure: USDrf is the stable token, pegged to one US dollar, and sUSDrf is the junior token. Holders deposit USDrf and receive sUSDrf, whose exchange rate is the vault balance divided by the circulating sUSDrf supply, so it rises as the backing portfolio earns and falls on losses. USDrf held outside the vault is reported separately under RealFi USDrf.',
+  methodology: 'TVL corresponds to USDrf locked in the RealFi staking vault on Cardano, read from the vault script address. RealFi operates a two-token structure: USDrf is the stable token, pegged to one US dollar, and sUSDrf is the staked token. Holders deposit USDrf and receive sUSDrf, whose exchange rate is the vault settled USDrf backing divided by the circulating sUSDrf supply, so it rises as the backing portfolio earns and falls when it loses. Portfolio losses are split pro rata between staked and unstaked supply. USDrf held outside the vault is reported separately under RealFi USDrf.',
   cardano: {
     tvl,
   },
