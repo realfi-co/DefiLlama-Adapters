@@ -20,10 +20,16 @@ const TREASURY_ACCOUNTS = [
   'stake1u86sehlnu8tjnughwwttfprynvtp4khaeepeq20gtkpseec2cmvgy', // operational treasury
 ]
 
+// The protocol's unstaked yield pot. It receives staking fees, yield forfeited on unstake,
+// and the unstaked share of positive yield, and is protocol-owned until governance sweeps it,
+// so it is not circulating supply. Excluded by payment address because this is an enterprise
+// address with no stake key, unlike the treasury wallets above.
+const YIELD_POT = 'addr1v9xdjv4h22pv2tq7vugvmyuw0uruue6hmwa86wy624ygs7gq22hrg'
+
 async function tvl(api) {
   const minted = await getTokensMinted(USDRF)
   const treasury = await Promise.all(TREASURY_ACCOUNTS.map(getAccountAddresses))
-  const owners = [STAKING_VAULT, ...treasury.flat().map((i) => i.address)]
+  const owners = [STAKING_VAULT, YIELD_POT, ...treasury.flat().map((i) => i.address)]
   const balances = await sumTokens2({ owners, tokens: [USDRF] })
   api.add(USDCX, minted - (balances[`cardano:${USDRF}`] ?? 0))
 }
@@ -32,7 +38,7 @@ module.exports = {
   timetravel: false,
   misrepresentedTokens: true,
   start: '2026-06-17',
-  methodology: 'TVL corresponds to the total supply of USDrf minted on Cardano, less USDrf held in the RealFi staking vault, and less USDrf held in RealFi treasury and pre-mint wallets. Staked USDrf is reported separately under RealFi Staking. USDrf is backed by a portfolio of real-world assets including money market funds, collateralized loan obligation funds, corporate bonds, and private credit. Those underlying assets are held off-chain and are not included in this figure.',
+  methodology: 'TVL corresponds to the total supply of USDrf minted on Cardano, less USDrf held in the RealFi staking vault, less USDrf held in RealFi treasury and pre-mint wallets, and less USDrf held in the unstaked yield pot, which accrues staking fees, yield forfeited on unstake, and the unstaked share of yield, and is protocol-owned until swept. Staked USDrf is reported separately under RealFi Staking. USDrf is backed by a portfolio of real-world assets including money market funds, collateralized loan obligation funds, corporate bonds, and private credit. Those underlying assets are held off-chain and are not included in this figure.',
   cardano: {
     tvl,
   },
